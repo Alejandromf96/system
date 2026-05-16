@@ -3,15 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <!-- PWA / Instalación -->
   <meta name="theme-color" content="#000814" />
   <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="SISTEMA" />
+  <meta name="application-name" content="SISTEMA" />
   <meta name="description" content="Sistema de Nivelación de Vida - Solo Leveling" />
-  <title>SISTEMA // SOLO LEVELING</title>
+
+  <!-- Íconos Apple (Safari iOS) -->
+  <link rel="apple-touch-icon" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="assets/icon-512.png" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon.ico" />
+  <link rel="shortcut icon" href="assets/favicon.ico" />
 
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="assets/icon-192.png" />
+
+  <title>SISTEMA // SOLO LEVELING</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -23,7 +37,7 @@
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
   <link rel="stylesheet" href="css/components.css" />
-  <link rel="stylesheet" href="css/animation.css" />
+  <link rel="stylesheet" href="css/animations.css" />
   <link rel="stylesheet" href="css/screens.css" />
 </head>
 <body>
@@ -197,9 +211,6 @@
           <button class="quest-tab" data-tab="class">CLASE</button>
           <button class="quest-tab" data-tab="raid">RAID</button>
           <button class="quest-tab" data-tab="negative">DEBUFFS</button>
-        </div>
-        <div class="quest-controls" style="margin:8px 0;">
-          <button id="migrate-quests-btn" class="btn-small">Sincronizar misiones nuevas</button>
         </div>
 
         <!-- Daily Quests -->
