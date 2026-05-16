@@ -1,0 +1,90 @@
+/* ═══════════════════════════════════════════════════════════════
+   SISTEMA // BASE — Reset, global typography, utility classes
+═══════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  /* Scanline overlay */
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 212, 255, 0.012) 0px,
+      transparent 1px,
+      transparent 3px
+    );
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 2px; }
+
+/* ── Selection ── */
+::selection {
+  background: var(--cyan-glow);
+  color: var(--cyan);
+}
+
+/* ── Focus ── */
+:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+/* ── Typography base ── */
+h1, h2, h3 {
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+}
+
+/* ── Utility ── */
+.hidden { display: none !important; }
+.visible { display: block !important; }
+.flex { display: flex; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.text-cyan { color: var(--cyan); }
+.text-red { color: var(--red); }
+.text-gold { color: var(--gold); }
+.text-muted { color: var(--text-muted); }
+.font-mono { font-family: var(--font-mono); }
+.font-display { font-family: var(--font-display); }
+
+/* ── Buttons base ── */
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  transition: var(--transition);
+}
+
+/* ── Input base ── */
+input {
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: none;
+  border: none;
+}
+
+input::placeholder { color: var(--text-muted); }

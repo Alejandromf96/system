@@ -1,0 +1,39 @@
+/* ═══════════════════════════════════════════════════════════════
+   SISTEMA // SCREENS — Screen-specific and responsive
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Desktop centering ── */
+@media (min-width: 480px) {
+  .app-header, .bottom-nav {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  body {
+    display: flex;
+    justify-content: center;
+  }
+  .app {
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    min-height: 100dvh;
+  }
+}
+
+/* ── Safe areas for notched devices ── */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+    height: calc(var(--nav-h) + env(safe-area-inset-bottom));
+  }
+  .app-main {
+    padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 16px);
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
