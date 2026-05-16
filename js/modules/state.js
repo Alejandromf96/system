@@ -57,12 +57,36 @@ const DEFAULT_STATE = {
   ],
 
   // ── Negative Actions (debuffs) ──
-  negativeActions: [
-    { id: 'na1', name: 'Llegar tarde al trabajo',   penalty: { stat: 'SEN', amount: 2 },                          expLoss: 20, type: 'negative' },
-    { id: 'na2', name: 'Usar scooter por pereza',   penalty: { stat: 'SEN', amount: 1 },                          expLoss: 10, type: 'negative' },
-    { id: 'na3', name: 'Más de 7 tazas de café',    penalty: { stat: 'VIT', amount: 2, statB: 'INT', amountB: 1 }, expLoss: 15, type: 'negative' },
-    { id: 'na4', name: 'Consumo de alcohol',         penalty: { stat: 'VIT', amount: 3, statB: 'INT', amountB: 2 }, expLoss: 30, type: 'negative' },
-  ],
+   negativeActions: [
+     // ── Originales ──
+     { id: 'na1', name: 'Llegar tarde al trabajo',     penalty: { stat: 'SEN', amount: 2 },                           expLoss: 20, type: 'negative' },
+     { id: 'na2', name: 'Usar scooter por pereza',     penalty: { stat: 'SEN', amount: 1 },                           expLoss: 10, type: 'negative' },
+     { id: 'na3', name: 'Más de 7 tazas de café',      penalty: { stat: 'VIT', amount: 2, statB: 'INT', amountB: 1 }, expLoss: 15, type: 'negative' },
+     { id: 'na4', name: 'Consumo de alcohol',           penalty: { stat: 'VIT', amount: 3, statB: 'INT', amountB: 2 }, expLoss: 30, type: 'negative' },
+   
+     // ── Sueño y descanso ──
+     { id: 'na5', name: 'Despertar después de las 9:30 AM',  penalty: { stat: 'WIL', amount: 2, statB: 'SEN', amountB: 1 }, expLoss: 25, type: 'negative' },
+     { id: 'na6', name: 'Desvelarse después de las 12 AM',   penalty: { stat: 'VIT', amount: 2, statB: 'WIL', amountB: 1 }, expLoss: 20, type: 'negative' },
+     { id: 'na7', name: 'Dormir menos de 6 horas',           penalty: { stat: 'VIT', amount: 3, statB: 'INT', amountB: 2 }, expLoss: 35, type: 'negative' },
+   
+     // ── Alimentación ──
+     { id: 'na8', name: 'Saltarse el desayuno',               penalty: { stat: 'VIT', amount: 2 },                           expLoss: 15, type: 'negative' },
+     { id: 'na9', name: 'Comida chatarra (día completo)',      penalty: { stat: 'VIT', amount: 3, statB: 'WIL', amountB: 2 }, expLoss: 25, type: 'negative' },
+   
+     // ── Productividad ──
+     { id: 'na10', name: 'Día sin estudiar ni programar',      penalty: { stat: 'INT', amount: 2 },                           expLoss: 20, type: 'negative' },
+     { id: 'na11', name: 'Más de 3 horas de redes sociales',   penalty: { stat: 'WIL', amount: 2, statB: 'INT', amountB: 1 }, expLoss: 20, type: 'negative' },
+     { id: 'na12', name: 'Procrastinar tarea importante',       penalty: { stat: 'WIL', amount: 3, statB: 'SEN', amountB: 1 }, expLoss: 30, type: 'negative' },
+   
+     // ── Cuerpo y entrenamiento ──
+     { id: 'na14', name: 'Saltarse el entrenamiento sin causa', penalty: { stat: 'STR', amount: 2, statB: 'WIL', amountB: 2 }, expLoss: 30, type: 'negative' },
+     { id: 'na15', name: 'Día sedentario completo',             penalty: { stat: 'STR', amount: 1, statB: 'VIT', amountB: 1 }, expLoss: 15, type: 'negative' },
+   
+     // ── Orden y entorno ──
+     { id: 'na16', name: 'Dejar el cuarto desordenado',         penalty: { stat: 'SEN', amount: 2 },                           expLoss: 15, type: 'negative' },
+     { id: 'na17', name: 'No tender la cama al levantarse',     penalty: { stat: 'SEN', amount: 1 },                           expLoss: 10, type: 'negative' },
+     { id: 'na18', name: 'Dejar platos sucios en el fregadero', penalty: { stat: 'SEN', amount: 2 },                           expLoss: 15, type: 'negative' },
+   ],
 
   // ── Dungeon Sessions ──
   dungeon: {
