@@ -1,21 +1,76 @@
 'use strict';
-/* ═══════════════════════════════════════════════════════════════
+/* 
    SISTEMA // STORAGE.JS — LocalStorage persistence layer
-═══════════════════════════════════════════════════════════════ */
+ */
 
 const Storage = (() => {
   let _state = null;
 
+  // ── Load: deserializa desde LocalStorage y migra datos ──
   function load() {
     try {
       const raw = localStorage.getItem(STATE_KEY);
       if (!raw) return deepClone(DEFAULT_STATE);
-      return mergeDeep(deepClone(DEFAULT_STATE), JSON.parse(raw));
+
+      const saved = JSON.parse(raw);
+      const state = mergeDeep(deepClone(DEFAULT_STATE), saved);
+
+      // Migración automática: añade quests/raids/acciones nuevas
+      // sin tocar el progreso existente
+      _migrateQuests(state);
+
+      return state;
     } catch {
       return deepClone(DEFAULT_STATE);
     }
   }
 
+  // ── Migración de quests: compara IDs y añade los que falten ──
+  function _migrateQuests(state) {
+    const lists = [
+      { key: 'dailyQuests',     src: DEFAULT_STATE.dailyQuests     },
+      { key: 'weeklyRaids',     src: DEFAULT_STATE.weeklyRaids     },
+      { key: 'classMissions',   src: DEFAULT_STATE.classMissions   },
+      { key: 'negativeActions', src: DEFAULT_STATE.negativeActions },
+    ];
+
+    for (const { key, src } of lists) {
+      // Asegurarse de que el array existe en el estado guardado
+      if (!Array.isArray(state[key])) state[key] = [];
+
+      for (const def of src) {
+        const exists = state[key].find(x => x.id === def.id);
+        if (!exists) {
+          state[key].push(deepClone(def));
+        }
+      }
+    }
+
+    // Migración de claves nuevas en player
+    // (para usuarios que tenían versión anterior sin estas claves)
+    const playerDefaults = {
+      streakProtected:    false,
+      doubleGoldCharges:  0,
+    };
+    for (const [key, val] of Object.entries(playerDefaults)) {
+      if (state.player[key] === undefined) {
+        state.player[key] = val;
+      }
+    }
+
+    // Migración de claves nuevas en dungeon
+    const dungeonDefaults = {
+      nextSessionDouble: false,
+      ignoreTabPenalty:  false,
+    };
+    for (const [key, val] of Object.entries(dungeonDefaults)) {
+      if (state.dungeon[key] === undefined) {
+        state.dungeon[key] = val;
+      }
+    }
+  }
+
+  // ── Save: serializa a LocalStorage ──
   function save(state) {
     try {
       localStorage.setItem(STATE_KEY, JSON.stringify(state));
@@ -24,16 +79,20 @@ const Storage = (() => {
     }
   }
 
+  // ── getState: retorna referencia interna (carga si es null) ──
   function getState() {
     if (!_state) _state = load();
     return _state;
   }
 
+  // ── setState: reemplaza estado completo y persiste ──
   function setState(newState) {
     _state = newState;
     save(_state);
   }
 
+  // ── update: mutación + persistencia en un solo paso ──
+  // Uso: Storage.update(s => { s.player.gold += 50; })
   function update(fn) {
     const s = getState();
     fn(s);
@@ -41,61 +100,47 @@ const Storage = (() => {
     return s;
   }
 
-  // ── Deep clone ──
-  function deepClone(obj) {
-    return JSON.parse(JSON.stringify(obj));
-  }
-
-  // ── Deep merge (target <- source, doesn't override arrays) ──
-  function mergeDeep(target, source) {
-    for (const key in source) {
-      const srcVal = source[key];
-      const tgtVal = target[key];
-
-      // Recurse into plain objects
-      if (srcVal && typeof srcVal === 'object' && !Array.isArray(srcVal)) {
-        if (!tgtVal) target[key] = {};
-        mergeDeep(target[key], srcVal);
-
-      // Merge arrays by `id` when both target and source are arrays (keep saved items, add missing defaults)
-      } else if (Array.isArray(srcVal) && Array.isArray(tgtVal)) {
-        // Preserve saved items by id, but keep defaults for missing items.
-        const srcById = new Map(srcVal.map(it => [it && it.id, it]));
-        const merged = tgtVal.map(defItem => {
-          if (defItem && defItem.id && srcById.has(defItem.id)) return srcById.get(defItem.id);
-          return defItem;
-        });
-        // Append any source items that are new (not present in defaults)
-        for (const item of srcVal) {
-          if (!item || !item.id) continue;
-          if (!merged.find(m => m && m.id === item.id)) merged.push(item);
-        }
-        target[key] = merged;
-
-      // Fallback: copy value if key exists in defaults (or if source explicitly provides it)
-      } else {
-        if (key in target || key in source) {
-          target[key] = srcVal;
-        }
-      }
-    }
-    return target;
-  }
-
+  // ── reset: vuelve al DEFAULT_STATE y borra LocalStorage ──
   function reset() {
     _state = deepClone(DEFAULT_STATE);
     save(_state);
     return _state;
   }
 
-  // ── Merge defaults into current saved state (safe migration) ──
-  function migrateDefaults() {
-    const current = getState();
-    const merged = mergeDeep(deepClone(DEFAULT_STATE), deepClone(current));
-    _state = merged;
-    save(_state);
-    return _state;
+  // ── deepClone: copia profunda sin referencias compartidas ──
+  function deepClone(obj) {
+    return JSON.parse(JSON.stringify(obj));
   }
 
-  return { load, save, getState, setState, update, reset, deepClone, migrateDefaults };
+  // ── mergeDeep: fusiona source en target ──
+  // Regla: los objetos se fusionan recursivamente,
+  // los arrays se reemplazan enteros (la migración
+  // de quests se encarga de arrays específicos)
+  function mergeDeep(target, source) {
+    for (const key in source) {
+      if (
+        source[key] !== null &&
+        typeof source[key] === 'object' &&
+        !Array.isArray(source[key])
+      ) {
+        if (!target[key] || typeof target[key] !== 'object') {
+          target[key] = {};
+        }
+        mergeDeep(target[key], source[key]);
+      } else {
+        target[key] = source[key];
+      }
+    }
+    return target;
+  }
+
+  return {
+    load,
+    save,
+    getState,
+    setState,
+    update,
+    reset,
+    deepClone,
+  };
 })();
