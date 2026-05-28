@@ -1,7 +1,7 @@
 'use strict';
-/* ═══════════════════════════════════════════════════════════════
+/* 
    SISTEMA // PLAYER.JS — Level, EXP, rank, stats management
-═══════════════════════════════════════════════════════════════ */
+ */
 
 const Player = (() => {
 
@@ -15,7 +15,8 @@ const Player = (() => {
     if (s.titles.includes('dawn_walker')) multiplier += 0.05;
 
     const finalExp = Math.floor(amount * multiplier);
-    const goldGained = getGoldForExp(finalExp);
+    const baseGold = getGoldForExp(finalExp);
+    const goldGained = _applyDoubleGold(baseGold);
 
     s.player.exp += finalExp;
     s.player.gold += goldGained;
@@ -123,6 +124,17 @@ const Player = (() => {
     const d = new Date();
     d.setDate(d.getDate() - 1);
     return d.toISOString().slice(0, 10);
+  }
+
+  function _applyDoubleGold(amount) {
+  const s = Storage.getState();
+  if (!s.player.doubleGoldCharges || s.player.doubleGoldCharges <= 0) {
+    return amount;
+  }
+  Storage.update(st => {
+    st.player.doubleGoldCharges = Math.max(0, st.player.doubleGoldCharges - 1);
+  });
+  return amount * 2;
   }
 
   return { addExp, removeExp, modifyStat, addGold, spendGold, updateStreak };
