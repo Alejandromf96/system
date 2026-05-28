@@ -1,5 +1,5 @@
 'use strict';
-/* ═══════════════════════════════════════════════════════════════
+/*
    SISTEMA // APP.JS — Main orchestrator
    Responsabilidades:
    - Boot sequence (animación de inicio)
@@ -9,16 +9,16 @@
    - Reloj en tiempo real del header
    - Reset de misiones a las 00:00
    - Inicialización de todos los módulos/componentes
-═══════════════════════════════════════════════════════════════ */
+ */
 
 const App = (() => {
 
-  // ── Variables de estado de la UI ──────────────────────────────
+  // ── Variables de estado de la UI 
   let _currentScreen = 'dashboard';
   let _clockInterval = null;
   let _midnightCheckInterval = null;
 
-  // ── Mensajes de boot del sistema ──────────────────────────────
+  // ── Mensajes de boot del sistema 
   const BOOT_MESSAGES = [
     'Inicializando núcleo del jugador...',
     'Cargando estadísticas de atributos...',
@@ -30,16 +30,16 @@ const App = (() => {
     'El Sistema te observa. Bienvenido.',
   ];
 
-  // ══════════════════════════════════════════════════════════════
+   
   //  ENTRY POINT
-  // ══════════════════════════════════════════════════════════════
+  
   function init() {
     _runBootSequence();
   }
 
-  // ══════════════════════════════════════════════════════════════
+  
   //  BOOT SEQUENCE
-  // ══════════════════════════════════════════════════════════════
+  
   function _runBootSequence() {
     const bar = document.getElementById('boot-bar');
     const msg = document.getElementById('boot-msg');
@@ -65,9 +65,9 @@ const App = (() => {
     setTimeout(advance, 200);
   }
 
-  // ══════════════════════════════════════════════════════════════
+  
   //  POST-BOOT LOGIC
-  // ══════════════════════════════════════════════════════════════
+  
   function _afterBoot() {
     // Ocultar boot screen
     const bootEl = document.getElementById('system-boot');
@@ -89,9 +89,9 @@ const App = (() => {
     _startApp();
   }
 
-  // ══════════════════════════════════════════════════════════════
+  
   //  SETUP MODAL (primer uso)
-  // ══════════════════════════════════════════════════════════════
+  
   function _showSetupModal() {
     const modal = document.getElementById('modal-setup');
     if (modal) modal.classList.remove('hidden');
@@ -120,9 +120,9 @@ const App = (() => {
     });
   }
 
-  // ══════════════════════════════════════════════════════════════
+  
   //  INICIAR APP COMPLETA
-  // ══════════════════════════════════════════════════════════════
+  
   function _startApp() {
     // Actualizar racha
     Player.updateStreak();
@@ -175,9 +175,9 @@ const App = (() => {
     }, 800);
   }
 
-  // ══════════════════════════════════════════════════════════════
+ 
   //  PENALTY GATE
-  // ══════════════════════════════════════════════════════════════
+  
   function _checkPenaltyGate() {
     const s = Storage.getState();
     if (!s.penalty.active) return;
@@ -197,9 +197,9 @@ const App = (() => {
     }, { once: true });
   }
 
-  // ══════════════════════════════════════════════════════════════
+  
   //  RENDER GLOBAL
-  // ══════════════════════════════════════════════════════════════
+  
   function _renderAll() {
     Dashboard.render();
     QuestScreen.render();
@@ -208,9 +208,9 @@ const App = (() => {
     ShadowScreen.render();
   }
 
-  // ══════════════════════════════════════════════════════════════
+  
   //  NAVEGACIÓN
-  // ══════════════════════════════════════════════════════════════
+  
   function _initNavigation() {
     document.querySelectorAll('.nav-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -244,9 +244,9 @@ const App = (() => {
     }
   }
 
-  // ══════════════════════════════════════════════════════════════
+  
   //  RELOJ EN TIEMPO REAL
-  // ══════════════════════════════════════════════════════════════
+  
   function _startClock() {
     const update = () => {
       const now = new Date();
@@ -271,9 +271,9 @@ const App = (() => {
     _clockInterval = setInterval(update, 1000);
   }
 
-  // ══════════════════════════════════════════════════════════════
+  
   //  VERIFICADOR DE MEDIANOCHE (reset automático de misiones)
-  // ══════════════════════════════════════════════════════════════
+  
   function _startMidnightChecker() {
     _midnightCheckInterval = setInterval(() => {
       const now = new Date();
@@ -295,9 +295,9 @@ const App = (() => {
 
 window._Sistema = { ...window._Sistema, App };
 
-// ══════════════════════════════════════════════════════════════
+
 //  BOOTSTRAP — Esperar a que el DOM esté listo
-// ══════════════════════════════════════════════════════════════
+
 document.addEventListener('DOMContentLoaded', () => {
   App.init();
 });
