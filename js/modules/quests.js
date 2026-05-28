@@ -1,7 +1,7 @@
 'use strict';
-/* ═══════════════════════════════════════════════════════════════
+/* 
    SISTEMA // QUESTS.JS — Quest completion, resets, penalties
-═══════════════════════════════════════════════════════════════ */
+ */
 
 const Quests = (() => {
 
@@ -78,9 +78,15 @@ const Quests = (() => {
     const total = s.dailyQuests.length;
     const done  = s.dailyQuests.filter(q => q.completed).length;
     if (done < total) {
+      // Si tiene poción de racha activa, consumirla en lugar de penalizar
+      if (s.player.streakProtected) {
+        s.player.streakProtected = false;
+        // No se activa penalización, solo se notifica
+        return;
+      }
       s.penalty.active = true;
       s.penalty.task   = getPenaltyTask(s.player.level);
-      s.penalty.date   = todayStr();
+      s.penalty.date   = new Date().toISOString().slice(0, 10);
     }
   }
 
