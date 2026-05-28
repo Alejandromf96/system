@@ -1,7 +1,7 @@
 'use strict';
-/* ═══════════════════════════════════════════════════════════════
+/* 
    SISTEMA // DUNGEON.JS — Focus timer, tab detection, rewards
-═══════════════════════════════════════════════════════════════ */
+ */
 
 const Dungeon = (() => {
   let _timer = null;
@@ -57,12 +57,20 @@ const Dungeon = (() => {
     _removeVisibilityListener();
 
     const minutes = Math.floor(_totalSeconds / 60);
-    const expEarned = _calculateReward(minutes);
+    const s = Storage.getState();
 
-    Storage.update((s) => {
-      s.dungeon.sessionsToday += 1;
-      s.dungeon.totalMinutesEver += minutes;
-      s.dungeon.expEarnedToday += expEarned;
+    // Aplicar doble EXP si hay llave activa
+    let expEarned = _calculateReward(minutes);
+    if (s.dungeon.nextSessionDouble) {
+      expEarned = expEarned * 2;
+      Storage.update(st => { st.dungeon.nextSessionDouble = false; });
+      Notifications.toast('Llave consumida — doble EXP aplicado', 'gold', '🗝️');
+    }
+
+    Storage.update((st) => {
+      st.dungeon.sessionsToday    += 1;
+      st.dungeon.totalMinutesEver += minutes;
+      st.dungeon.expEarnedToday   += expEarned;
     });
 
     Player.addExp(expEarned, `Dungeon ${minutes} min`);
@@ -72,8 +80,15 @@ const Dungeon = (() => {
   }
 
   function _calculateReward(minutes) {
-    let base = minutes * 2;  // 2 EXP per minute
-    if (_tabLeftCount > 0) base = Math.floor(base * 0.5); // -50% if left
+    let base = minutes * 2;
+    const s = Storage.getState();
+    if (_tabLeftCount > 0 && !s.dungeon.ignoreTabPenalty) {
+      base = Math.floor(base * 0.5);
+    }
+    if (_tabLeftCount > 0 && s.dungeon.ignoreTabPenalty) {
+      Storage.update(st => { st.dungeon.ignoreTabPenalty = false; });
+      Notifications.toast('Cristal consumido — penalización ignorada', 'gold', '🌀');
+    }
     return base;
   }
 
