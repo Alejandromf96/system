@@ -1,7 +1,7 @@
 'use strict';
-/* ═══════════════════════════════════════════════════════════════
+/* 
    SISTEMA // DUNGEONSCREEN.JS — Dungeon timer UI
-═══════════════════════════════════════════════════════════════ */
+ */
 
 const DungeonScreen = (() => {
   let _selectedMinutes = 25;
